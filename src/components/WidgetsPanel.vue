@@ -21,6 +21,15 @@ export default {
       copy(el, source) {
         return $(source).is('#source')
       }
+    }).on('drop', (a, b, c) => {
+      const dropTarget = b.id;
+      const cameFromBar = $(c).is('#source');
+
+      if (!cameFromBar) {
+        console.log('remove from:', c.id)
+      }
+
+      console.log('create at:', dropTarget)
     });
   }
 }

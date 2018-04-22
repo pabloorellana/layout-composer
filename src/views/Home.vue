@@ -7,7 +7,7 @@
       <composer></composer>
     </div>
     <div class="tools-panel col-3 h-100" style="border: 1px solid black;">
-      tools
+      <options-panel></options-panel>
     </div>
   </div>
 </template>
@@ -15,13 +15,15 @@
 <script>
 // @ is an alias to /src
 import Composer from '@/components/Composer';
-import WidgetsPanel from '@/components/WidgetsBar';
+import WidgetsPanel from '@/components/WidgetsPanel';
+import OptionsPanel from '@/components/OptionsPanel';
 
 export default {
   name: 'home',
   components: {
     Composer,
-    WidgetsPanel
+    WidgetsPanel,
+    OptionsPanel
   }
 }
 </script>
