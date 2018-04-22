@@ -1,7 +1,7 @@
 <template>
   <table id="table">
     <tr v-for="(row, rowIndex) in rows" :key="rowIndex">
-        <td :id="rowIndex.toString() + columnIndex.toString()"
+        <td class="copy-target" :id="rowIndex.toString() + columnIndex.toString()"
           v-for="(column, columnIndex) in columns" :key="columnIndex">
         </td>
     </tr>
@@ -44,7 +44,8 @@ export default {
 table {
   border-collapse: collapse;
   width:100%;
-  height:100%
+  height:100%;
+  table-layout: fixed;
 }
 
 table, th, td {

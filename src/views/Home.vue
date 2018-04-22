@@ -1,7 +1,7 @@
 <template>
   <div class="home row h-100">
     <div class="widgets-panel col-2 h-100" style="border: 1px solid black;">
-      widgets
+      <widgets-panel></widgets-panel>
     </div>
     <div class="composer-panel col-7 h-100" style="border: 1px solid black;">
       <composer></composer>
@@ -14,11 +14,14 @@
 
 <script>
 // @ is an alias to /src
-import Composer from '@/components/Composer'
+import Composer from '@/components/Composer';
+import WidgetsPanel from '@/components/WidgetsBar';
+
 export default {
   name: 'home',
   components: {
-    Composer
+    Composer,
+    WidgetsPanel
   }
 }
 </script>

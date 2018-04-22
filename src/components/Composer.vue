@@ -10,9 +10,8 @@
   </div>
 </template>
 <script>
-import * as dragula from 'dragula'
 import TableGenerator from "@/components/TableGenerator";
-console.log(dragula)
+
 export default {
   components: {
     TableGenerator
