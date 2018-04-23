@@ -1,7 +1,7 @@
 <template>
   <table id="table">
     <tr v-for="(row, rowIndex) in rows" :key="rowIndex">
-        <td class="copy-target" :id="rowIndex.toString() + columnIndex.toString()"
+        <td @click="selectCell" class="copy-target cell" :id="rowIndex.toString() + columnIndex.toString()"
           v-for="(column, columnIndex) in columns" :key="columnIndex">
         </td>
     </tr>
@@ -23,7 +23,7 @@ export default {
     columns: propDefinition
   },
   methods: {
-    serializeToJson () {
+    serializeToJson() {
       const table = document.getElementById("table");
       
       return Array.from(table.rows).map(row => {
@@ -33,6 +33,17 @@ export default {
           rowSpan
         }));
       });
+    },
+    selectCell(arg) {
+      const cellWasClicked = $(arg.target).hasClass('cell');
+
+      if (!cellWasClicked) {
+        const [clickedCell] = $(arg.target).parent();
+     
+        return this.$emit('cell-clicked', clickedCell.id)
+      }
+
+      this.$emit('cell-clicked', arg.target.id)
     }
   },
   mounted () {
@@ -50,6 +61,10 @@ table {
 
 table, th, td {
   border: 1px dotted #ccc;
+}
+
+.cell {
+  padding: 5px;
 }
 </style>
 

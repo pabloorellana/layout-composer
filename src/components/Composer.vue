@@ -5,6 +5,7 @@
         :rows="rows"
         :columns="columns"
         @table-changed="onTableChange"
+        @cell-clicked="onCellClick"
         ></table-generator>
     </div>
   </div>
@@ -18,13 +19,17 @@ export default {
   },
   data () {
     return {
-      rows: 6,
-      columns: 4 
+      rows: 5,
+      columns: 3 
     }
   },
   methods: {
     onTableChange (d) {
-      console.log(d)
+      this.$store.commit('setGrid', d);
+      console.log('XD', this.$store.getters.layout)
+    },
+    onCellClick(cellId) {
+      console.log('cellId', this.$store.getters.contentByCellId(cellId))
     }
   }
 }
