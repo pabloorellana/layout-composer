@@ -22,10 +22,11 @@ export default new Vuex.Store({
     setGrid: (state, payload) => state.layout.grid = payload,
     setContent: (state, { targetId, content }) => {
       const cell = getCell(state.layout.grid, targetId);
-      if (cell.hasOwnProperty('content') && Array.isArray(cell.content)) {
+      /*if (cell.hasOwnProperty('content') && Array.isArray(cell.content)) {
         return cell.content.push(content);
       }
-      cell.content = [content];
+      cell.content = [content];*/
+      cell.content = content;
     },
     moveContentFromTo: (state, { from, to }) => {
       // TODO suppor move content from one cell containing multiple widgets

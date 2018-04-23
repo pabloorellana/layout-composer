@@ -1,25 +1,30 @@
 <template>
   <div id="options">
-    {{selectedWidget}}
-    <room-options></room-options>
-    <room-manager-server></room-manager-server>
     <grid></grid>
+    <div ref="container"></div>
   </div>
 </template>
 <script>
-import RoomOptions from '@/components/options/Room'
-import RoomManagerServer from '@/components/options/RoomManagerServer'
-import Grid from '@/components/options/Grid'
+import Grid from '@/components/options/Grid';
+import ComponentFactoryMap from '@/components/options/ComponentFactoryMap';
 
 export default {
   components: {
-    RoomOptions,
-    RoomManagerServer,
     Grid
   },
   computed: {
     selectedWidget() {
       return this.$store.getters.selectedWidget
+    }
+  },
+  watch: {
+    selectedWidget(newVal, oldVal) {
+      while (this.$refs.container.firstChild) {
+        this.$refs.container.removeChild(this.$refs.container.firstChild);
+      }
+
+      const componentInstance = ComponentFactoryMap[newVal.type]();
+      this.$refs.container.appendChild(componentInstance.$el);
     }
   }
 }
