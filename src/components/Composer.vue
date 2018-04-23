@@ -19,17 +19,17 @@ export default {
   },
   data () {
     return {
-      rows: 5,
-      columns: 3 
+      rows: 6,
+      columns: 4
     }
   },
   methods: {
     onTableChange (d) {
       this.$store.commit('setGrid', d);
-      console.log('XD', this.$store.getters.layout)
     },
     onCellClick(cellId) {
-      console.log('cellId', this.$store.getters.contentByCellId(cellId))
+      const { content } = this.$store.getters.contentByCellId(cellId);
+      this.$store.commit('setSelectedWidget', content);
     }
   }
 }

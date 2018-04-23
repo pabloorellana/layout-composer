@@ -4,7 +4,7 @@
       <b-dropdown-item v-for="(room, index) in rooms" :key="index"
         @click="selectRoom(room)">{{room.name}}</b-dropdown-item>
     </b-dropdown>
-  </div>  
+  </div>
 </template>
 <script>
 import bDropdown from 'bootstrap-vue/es/components/dropdown/dropdown';
@@ -15,21 +15,16 @@ export default {
   },
   data() {
     return {
-      rooms: [{
-        id: '1',
-        name: 'punata'
-      }, {
-        id: '2',
-        name: 'tarata'
-      }, {
-        id: '3',
-        name: 'mizque'
-      }],
       selectedRoom: {}
     }
   },
+  computed: {
+    rooms() {
+      return this.$store.getters.rooms
+    }
+  },
   mounted() {
-    this.selectedRoom = this.rooms[0];
+    //this.selectedRoom = this.rooms[0];
   },
   methods: {
     selectRoom(room) {

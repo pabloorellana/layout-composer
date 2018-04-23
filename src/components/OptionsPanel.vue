@@ -22,9 +22,10 @@ export default {
       while (this.$refs.container.firstChild) {
         this.$refs.container.removeChild(this.$refs.container.firstChild);
       }
-
-      const componentInstance = ComponentFactoryMap[newVal.type]();
-      this.$refs.container.appendChild(componentInstance.$el);
+      if (newVal) {
+        const componentInstance = ComponentFactoryMap[newVal.type]();
+        this.$refs.container.appendChild(componentInstance.$el);
+      }
     }
   }
 }

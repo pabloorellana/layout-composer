@@ -16,7 +16,8 @@ export default new Vuex.Store({
     layout: state => state.layout,
     grid: state => state.layout.grid,
     selectedWidget: state => state.selectedWidget,
-    contentByCellId: state => (cellId) => getCell(state.layout.grid, cellId)
+    contentByCellId: state => (cellId) => getCell(state.layout.grid, cellId),
+    rooms: state => state.rooms
   },
   mutations: {
     setGrid: (state, payload) => state.layout.grid = payload,
@@ -36,7 +37,8 @@ export default new Vuex.Store({
       target.content = source.content;
       delete source.content;
     },
-    setSelectedWidget: (state, widget) => state.selectedWidget = widget
+    setSelectedWidget: (state, widget) => state.selectedWidget = widget,
+    addToState: (state, { key, data }) => state[key] = data
   },
   actions: {
 

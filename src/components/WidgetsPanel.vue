@@ -33,7 +33,7 @@ export default {
     }).on('drop', (el, target, source) => {
       const targetId = target.id;
       const cameFromBar = $(source).is('#source');
-      
+
       if (!cameFromBar) {
         return this.updateWidgetLocation(source.id, targetId);
       }
@@ -55,7 +55,7 @@ export default {
         content
       });
 
-      this.$store.commit('setSelectedWidget', content)      
+      this.$store.commit('setSelectedWidget', content)
     },
     updateWidgetLocation(sourceId, targetId) {
       this.$store.commit('moveContentFromTo', {
