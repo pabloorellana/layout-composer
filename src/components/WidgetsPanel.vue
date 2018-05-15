@@ -11,6 +11,7 @@ import * as dragula from 'dragula';
 import Room from '@/components/widgets/Room';
 import RoomManagerServer from '@/components/widgets/RoomManagerServer';
 import WidgetsMap from '@/services/WidgetsMap.js'
+import ComponentFactoryMap from '@/components/widgets/WidgetFactoryMap';
 
 export default {
   components: {
@@ -43,6 +44,11 @@ export default {
   },
   methods: {
     addNewWidGet(element, targetId) {
+      // TODO config dragula to actually not to copy anything
+      const tdContainer = $(`#${targetId}`)
+      tdContainer.empty();
+
+
       // TODO: in order to recognize the element that was dropped into
       // the table, the element has to be wraped in a "div" containing
       // a class with a name mapped in WidgetsMap in order to
@@ -55,7 +61,11 @@ export default {
         content
       });
 
-      this.$store.commit('setSelectedWidget', content)
+      this.$store.commit('setSelectedWidget', content);
+
+      const { content: widgetProps } = this.$store.getters.contentByCellId(targetId)
+      const componentInstance = ComponentFactoryMap[elementType](widgetProps);
+      tdContainer[0].appendChild(componentInstance.$el);
     },
     updateWidgetLocation(sourceId, targetId) {
       this.$store.commit('moveContentFromTo', {

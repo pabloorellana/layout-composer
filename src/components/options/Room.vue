@@ -15,7 +15,7 @@ export default {
   },
   data() {
     return {
-      selectedRoom: {}
+      selectedRoom: this.$store.getters.selectedWidget
     }
   },
   computed: {
@@ -23,12 +23,10 @@ export default {
       return this.$store.getters.rooms
     }
   },
-  mounted() {
-    //this.selectedRoom = this.rooms[0];
-  },
   methods: {
     selectRoom(room) {
       this.selectedRoom = room;
+      this.$store.commit('setSelectedRoom', room);
     }
   }
 }

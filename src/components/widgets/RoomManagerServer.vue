@@ -6,7 +6,6 @@
 <script>
 export default {
   mounted() {
-    console.log('XDXDXD')
     this.$store.commit('addToState', {key: 'rooms', data: [{
         id: '1',
         name: 'punata'
@@ -16,6 +15,15 @@ export default {
       }, {
         id: '3',
         name: 'mizque'
+      }, {
+        id: '4',
+        name: 'quillacollo'
+      }, {
+        id: '5',
+        name: 'arani'
+      }, {
+        id: '6',
+        name: 'chimore'
       }
     ]})
   }

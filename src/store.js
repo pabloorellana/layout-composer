@@ -38,7 +38,11 @@ export default new Vuex.Store({
       delete source.content;
     },
     setSelectedWidget: (state, widget) => state.selectedWidget = widget,
-    addToState: (state, { key, data }) => state[key] = data
+    addToState: (state, { key, data }) => state[key] = data,
+    setSelectedRoom: (state, {id, name}) => {
+      state.selectedWidget.id = id;
+      state.selectedWidget.name = name
+    },
   },
   actions: {
 
