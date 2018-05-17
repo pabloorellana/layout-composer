@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import store from './../../store';
-import RoomWidgetComponent from './Room.vue';
+import store from '@/store';
+import RoomWidgetComponent from './Room';
 
 export default function (props) {
   const Component = Vue.extend(RoomWidgetComponent);

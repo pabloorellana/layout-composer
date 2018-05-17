@@ -6,7 +6,7 @@
 </template>
 <script>
 import Grid from '@/components/options/Grid';
-import ComponentFactoryMap from '@/components/options/ComponentFactoryMap';
+import WidgetFactoryMap from '@/plugins/room-manager/WidgetFactoryMap';
 
 export default {
   components: {
@@ -23,7 +23,7 @@ export default {
         this.$refs.container.removeChild(this.$refs.container.firstChild);
       }
       if (newVal) {
-        const componentInstance = ComponentFactoryMap[newVal.type]();
+        const componentInstance = WidgetFactoryMap.config[newVal.type]();
         this.$refs.container.appendChild(componentInstance.$el);
       }
     }

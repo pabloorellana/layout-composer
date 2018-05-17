@@ -2,21 +2,21 @@
   <div class="widgets-panel">
     <div id="source" class="container">
       <room></room>
-      <room-manager-server></room-manager-server>
+      <rm-server></rm-server>
     </div>
   </div>
 </template>
 <script>
 import * as dragula from 'dragula';
-import Room from '@/components/widgets/Room';
-import RoomManagerServer from '@/components/widgets/RoomManagerServer';
-import WidgetsMap from '@/services/WidgetsMap.js'
-import ComponentFactoryMap from '@/components/widgets/WidgetFactoryMap';
+import Room from '@/plugins/room-manager/room/widget/Room';
+import RmServer from '@/plugins/room-manager/server/widget/Server';
+import WidgetsMap from '@/plugins/room-manager/WidgetsMap';
+import WidgetFactoryMap from '@/plugins/room-manager/WidgetFactoryMap';
 
 export default {
   components: {
     Room,
-    RoomManagerServer
+    RmServer
   },
   computed: {
     grid() {
@@ -64,7 +64,7 @@ export default {
       this.$store.commit('setSelectedWidget', content);
 
       const { content: widgetProps } = this.$store.getters.contentByCellId(targetId)
-      const componentInstance = ComponentFactoryMap[elementType](widgetProps);
+      const componentInstance = WidgetFactoryMap.widget[elementType](widgetProps);
       tdContainer[0].appendChild(componentInstance.$el);
     },
     updateWidgetLocation(sourceId, targetId) {
