@@ -5,6 +5,8 @@
         :rows="rows"
         :columns="columns"
         @table-changed="onTableChange"
+        @row-added="onRowAddition"
+        @column-added="onColumnAdition"
         @cell-clicked="onCellClick"
         ></table-generator>
     </div>
@@ -17,15 +19,24 @@ export default {
   components: {
     TableGenerator
   },
-  data () {
-    return {
-      rows: 6,
-      columns: 4
+  computed: {
+    rows() {
+      return this.$store.getters.rows;
+    },
+    columns() {
+      return this.$store.getters.columns;
     }
   },
   methods: {
     onTableChange (d) {
+      console.log('onTableChange', d)
       this.$store.commit('setGrid', d);
+    },
+    onRowAddition(row) {
+      this.$store.commit('addGridRow', row);
+    },
+    onColumnAdition(column) {
+      this.$store.commit('addGridColumn', column);
     },
     onCellClick(cellId) {
       const { content } = this.$store.getters.contentByCellId(cellId);

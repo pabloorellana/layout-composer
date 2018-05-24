@@ -5,15 +5,19 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    layout: [{
+    layout: {
       id: 'lay1',
       backgroundColor: '#000',
+      rows: 4,
+      columns: 3,
       grid: []
-    }],
+    },
     selectedWidget: undefined,
   },
   getters: {
     layout: state => state.layout,
+    rows: state => state.layout.rows,
+    columns: state => state.layout.columns,
     grid: state => state.layout.grid,
     selectedWidget: state => state.selectedWidget,
     contentByCellId: state => (cellId) => getCell(state.layout.grid, cellId),
@@ -21,6 +25,8 @@ export default new Vuex.Store({
   },
   mutations: {
     setGrid: (state, payload) => state.layout.grid = payload,
+    setRows: (state, payload) => state.layout.rows = payload,
+    setColumns: (state, payload) => state.layout.columns = payload,
     setContent: (state, { targetId, content }) => {
       const cell = getCell(state.layout.grid, targetId);
       /*if (cell.hasOwnProperty('content') && Array.isArray(cell.content)) {
@@ -29,6 +35,8 @@ export default new Vuex.Store({
       cell.content = [content];*/
       cell.content = content;
     },
+    addGridRow: (state, payload) => state.layout.grid.push(payload),
+    addGridColumn: (state, payload) => state.layout.grid.forEach((row, index) => row.push(payload[index])),
     moveContentFromTo: (state, { from, to }) => {
       // TODO suppor move content from one cell containing multiple widgets
       const source = getCell(state.layout.grid, from);

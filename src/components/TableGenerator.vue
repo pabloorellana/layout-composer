@@ -9,10 +9,9 @@
 </template>
 <script>
 const propDefinition = {
-  type: Number,
   default: 1,
   validator (value) {
-    return value >= 1
+    return +value >= 1
   }
 };
 
@@ -22,10 +21,13 @@ export default {
     rows: propDefinition,
     columns: propDefinition
   },
+  mounted () {
+    this.$emit('table-changed', this.serializeToJson())
+  },
   methods: {
     serializeToJson() {
       const table = document.getElementById("table");
-      
+
       return Array.from(table.rows).map(row => {
         return Array.from(row.cells).map(({id, colSpan, rowSpan}) => ({
           id,
@@ -39,15 +41,36 @@ export default {
 
       if (!cellWasClicked) {
         const [clickedCell] = $(arg.target).parent();
-     
+
         return this.$emit('cell-clicked', clickedCell.id)
       }
 
       this.$emit('cell-clicked', arg.target.id)
     }
   },
-  mounted () {
-    this.$emit('table-changed', this.serializeToJson())
+  watch: {
+    rows(newVal, oldVal) {
+      setTimeout(() => {
+        const newRow = Array(this.columns).fill(0).map((column, index) => ({
+          id: oldVal + index.toString(),
+          colSpan: 1,
+          rowSpan: 1
+        }));
+
+        this.$emit('row-added', newRow);
+      });
+    },
+    columns(newVal, oldVal) {
+      setTimeout(() => {
+        const newColumn = Array(this.rows).fill(0).map((row, index) => ({
+          id: index.toString() + oldVal,
+          colSpan: 1,
+          rowSpan: 1
+        }));
+
+        this.$emit('column-added', newColumn);
+      });
+    }
   }
 }
 </script>

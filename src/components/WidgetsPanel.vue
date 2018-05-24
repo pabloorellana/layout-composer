@@ -13,6 +13,12 @@ import RmServer from '@/plugins/room-manager/server/widget/Server';
 import WidgetsMap from '@/plugins/room-manager/WidgetsMap';
 import WidgetFactoryMap from '@/plugins/room-manager/WidgetFactoryMap';
 
+const drake = dragula({
+  copy(el, source) {
+    return $(source).is('#source')
+  }
+});
+
 export default {
   components: {
     Room,
@@ -21,17 +27,17 @@ export default {
   computed: {
     grid() {
       return this.$store.getters.layout
+    },
+    rows() {
+      return this.$store.getters.rows
+    },
+    columns() {
+      return this.$store.getters.columns
     }
   },
   mounted () {
-    const [source] = $('#source');
-    const targets = $('.copy-target');
-
-    dragula([source, ...targets], {
-      copy(el, source) {
-        return $(source).is('#source')
-      }
-    }).on('drop', (el, target, source) => {
+    drake.containers.push(...this.getDrakeContainers());
+    drake.on('drop', (el, target, source) => {
       const targetId = target.id;
       const cameFromBar = $(source).is('#source');
 
@@ -75,6 +81,23 @@ export default {
 
       const {content} = this.$store.getters.contentByCellId(targetId);
       this.$store.commit('setSelectedWidget', content);
+    },
+    getDrakeContainers() {
+      const [source] = $('#source');
+      const targets = $('.copy-target');
+      return [source, ...targets];
+    },
+    updateDrakeContainers() {
+      drake.containers = [];
+      drake.containers.push(...this.getDrakeContainers());
+    }
+  },
+  watch: {
+    rows() {
+      setTimeout(this.updateDrakeContainers.bind(this));
+    },
+    columns() {
+      setTimeout(this.updateDrakeContainers.bind(this));
     }
   }
 }

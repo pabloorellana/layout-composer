@@ -1,19 +1,36 @@
 <template>
   <div class="grid-options">
-    <form>
-      <div class="form-group">
-        <label for="exampleInputEmail1">Height</label>
-        <input type="email" class="form-control" id="grid-height" aria-describedby="emailHelp" placeholder="Enter email">
-      </div>
-      <div class="form-group">
-        <label for="exampleInputPassword1">Width</label>
-        <input type="password" class="form-control" id="grid-width" placeholder="Password">
-      </div>
-    </form>    
-  </div>    
+    <div class="form-group">
+      <label for="height">Height</label>
+      <input id="height" class="form-control" type="number" v-model="rows">
+    </div>
+    <div class="form-group">
+      <label for="width">Width</label>
+      <input id="width" class="form-control" type="number" v-model="columns">
+    </div>
+    <router-link to="/preview">Preview</router-link>
+  </div>
 </template>
 <script>
 export default {
+  computed: {
+    rows: {
+      get() {
+        return this.$store.getters.rows;
+      },
+      set(value) {
+        this.$store.commit('setRows', +value);
+      }
+    },
+    columns: {
+      get() {
+        return this.$store.getters.columns;
+      },
+      set(value) {
+        this.$store.commit('setColumns', +value);
+      }
+    },
+  }
 }
 </script>
 <style lang="less" scoped>

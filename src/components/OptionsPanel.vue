@@ -1,7 +1,11 @@
 <template>
-  <div id="options">
-    <grid></grid>
-    <div ref="container"></div>
+  <div id="options" class="row">
+    <div class="col-12">
+      <grid></grid>
+    </div>
+    <div class="col-12">
+      <div ref="container"></div>
+    </div>
   </div>
 </template>
 <script>
