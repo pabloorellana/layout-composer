@@ -6,7 +6,9 @@
         :columns="columns"
         @table-changed="onTableChange"
         @row-added="onRowAddition"
+        @row-deleted="onRowDeletion"
         @column-added="onColumnAdition"
+        @column-deleted="onColumnDeletion"
         @cell-clicked="onCellClick"
         ></table-generator>
     </div>
@@ -35,8 +37,14 @@ export default {
     onRowAddition(row) {
       this.$store.commit('addGridRow', row);
     },
+    onRowDeletion() {
+      this.$store.commit('deleteGridRow');
+    },
     onColumnAdition(column) {
       this.$store.commit('addGridColumn', column);
+    },
+    onColumnDeletion() {
+      this.$store.commit('deleteGridColumn');
     },
     onCellClick(cellId) {
       const { content } = this.$store.getters.contentByCellId(cellId);

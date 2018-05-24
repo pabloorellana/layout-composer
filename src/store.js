@@ -37,6 +37,8 @@ export default new Vuex.Store({
     },
     addGridRow: (state, payload) => state.layout.grid.push(payload),
     addGridColumn: (state, payload) => state.layout.grid.forEach((row, index) => row.push(payload[index])),
+    deleteGridRow: (state, payload) => state.layout.grid.splice(-1, 1),
+    deleteGridColumn: (state, payload) => state.layout.grid.forEach((row, index) => row.splice(-1, 1)),
     moveContentFromTo: (state, { from, to }) => {
       // TODO suppor move content from one cell containing multiple widgets
       const source = getCell(state.layout.grid, from);

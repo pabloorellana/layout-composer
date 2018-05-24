@@ -50,26 +50,34 @@ export default {
   },
   watch: {
     rows(newVal, oldVal) {
-      setTimeout(() => {
-        const newRow = Array(this.columns).fill(0).map((column, index) => ({
-          id: oldVal + index.toString(),
-          colSpan: 1,
-          rowSpan: 1
-        }));
+      if (newVal > oldVal) {
+        return setTimeout(() => {
+          const newRow = Array(this.columns).fill(0).map((column, index) => ({
+            id: oldVal + index.toString(),
+            colSpan: 1,
+            rowSpan: 1
+          }));
 
-        this.$emit('row-added', newRow);
-      });
+          this.$emit('row-added', newRow);
+        });
+      }
+
+      this.$emit('row-deleted');
     },
     columns(newVal, oldVal) {
-      setTimeout(() => {
-        const newColumn = Array(this.rows).fill(0).map((row, index) => ({
-          id: index.toString() + oldVal,
-          colSpan: 1,
-          rowSpan: 1
-        }));
+      if (newVal > oldVal) {
+        return setTimeout(() => {
+          const newColumn = Array(this.rows).fill(0).map((row, index) => ({
+            id: index.toString() + oldVal,
+            colSpan: 1,
+            rowSpan: 1
+          }));
 
-        this.$emit('column-added', newColumn);
-      });
+          this.$emit('column-added', newColumn);
+        });
+      }
+
+      this.$emit('column-deleted');
     }
   }
 }
