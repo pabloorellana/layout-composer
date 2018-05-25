@@ -1,5 +1,5 @@
 <template>
-  <div class="room-manager-server">
+  <div class="room-manager-server text-center no-layout">
     <label>RM Service</label>
   </div>
 </template>
@@ -10,7 +10,7 @@ export default {
 <style lang="less" scoped>
 .room-manager-server {
   height: 100%;
-  width: 100%;
-  background-color: green;
+  max-width: 100%;
+  border: 2px dotted green;
 }
 </style>

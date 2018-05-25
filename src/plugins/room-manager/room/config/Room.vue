@@ -1,6 +1,9 @@
 <template>
   <div class="room-options">
-    <div class="form-group">
+    <div v-if="!rooms.length">
+      <span>No Room Manager Service has been added yet.</span>
+    </div>
+    <div class="form-group" v-if="rooms.length">
       <label for="rooms-dropdown">Room Assigned</label>
       <b-dropdown id="rooms-dropdown" size="sm" variant="default" :text="selectedRoom.name" class="m-md-2">
         <b-dropdown-item v-for="(room, index) in rooms" :key="index"

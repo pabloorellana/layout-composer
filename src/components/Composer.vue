@@ -1,14 +1,15 @@
 <template>
   <div id="composer" class="row">
+    <div id="services-container" class="copy-target"></div>
     <div class="table-container">
       <table-generator
         :rows="rows"
         :columns="columns"
         @table-changed="onTableChange"
-        @row-added="onRowAddition"
-        @row-deleted="onRowDeletion"
-        @column-added="onColumnAdition"
-        @column-deleted="onColumnDeletion"
+        @row-added="addGridRow"
+        @row-deleted="deleteGridRow"
+        @column-added="addGridColumn"
+        @column-deleted="deleteGridColumn"
         @cell-clicked="onCellClick"
         ></table-generator>
     </div>
@@ -33,13 +34,14 @@ export default {
       const { content } = this.contentByCellId(cellId);
       this.setSelectedWidget(content);
     },
-    ...mapMutations(['setGrid', 'setSelectedWidget']),
-    ...mapMutations({
-      onRowAddition: 'addGridRow',
-      onRowDeletion: 'deleteGridRow',
-      onColumnAdition: 'addGridColumn',
-      onColumnDeletion: 'deleteGridColumn'
-    })
+    ...mapMutations([
+      'setGrid',
+      'setSelectedWidget',
+      'addGridRow',
+      'deleteGridRow',
+      'addGridColumn',
+      'deleteGridColumn'
+    ]),
   }
 }
 </script>
@@ -49,9 +51,16 @@ export default {
 
   .table-container {
     background-color: #000;
-    margin: 15px auto;
+    margin: 0px auto;
     width: 400px;
     height: 600px;
+  }
+
+  #services-container {
+    border: 2px dotted blue;
+    margin: 0px auto;
+    width: 400px;
+    height: 50px;
   }
 }
 </style>

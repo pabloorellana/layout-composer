@@ -38,34 +38,49 @@ export default {
         return this.updateWidgetLocation(source.id, targetId);
       }
 
+      // Cancelling drop event so we can instantiate the vue components
+      // instead of relaying in dragula's DOM copy
+      drake.cancel(true);
+
+      //TODO, "service" type widgets should have the "no-layout" class in their
+      //main container in order to be recognized
+      const isInvisibleWidget = $(el).hasClass("no-layout");
+      if (isInvisibleWidget) {
+        return this.addServiceWidget(el);
+      }
+
       this.addNewWidGet(el, targetId);
     });
   },
   methods: {
-    ...mapMutations(['setContent', 'setSelectedWidget', 'moveContentFromTo', 'setSelectedWidget']),
-    addNewWidGet(element, targetId) {
-      // TODO config dragula to actually not to copy anything
-      const tdContainer = $(`#${targetId}`)
-      tdContainer.empty();
-
-
+    ...mapMutations([
+      'setContent',
+      'setSelectedWidget',
+      'moveContentFromTo',
+      'setSelectedWidget'
+    ]),
+    addServiceWidget(element) {
       // TODO: in order to recognize the element that was dropped into
       // the table, the element has to be wraped in a "div" containing
       // a class with a name mapped in WidgetsMap in order to
       // get the data that this component should bind in the store
-      const [elementType] = ($(element)[0]).className.split(' ');
-      const content = WidgetsMap[elementType]();
+      const elementType = this.getElementType(element);
+      const widgetModel = WidgetsMap[elementType]();
 
-      this.setContent({
-        targetId,
-        content
-      });
+      this.setSelectedWidget(widgetModel);
 
-      this.setSelectedWidget(content);
+      //const { content: widgetProps } = this.contentByCellId(targetId)
+      this.renderWidget($(`#services-container`)[0], { type: elementType, props: widgetModel })
+    },
+    addNewWidGet(element, targetId) {
+      const elementType = this.getElementType(element);
+      const widgetModel = WidgetsMap[elementType]();
 
-      const { content: widgetProps } = this.contentByCellId(targetId)
-      const componentInstance = WidgetFactoryMap.widget[elementType](widgetProps);
-      tdContainer[0].appendChild(componentInstance.$el);
+      this.setContent({ targetId, content: widgetModel });
+      this.setSelectedWidget(widgetModel);
+
+      const { content: widgetProps } = this.contentByCellId(targetId);
+      this.renderWidget($(`#${targetId}`)[0], { type: elementType, props: widgetProps })
     },
     updateWidgetLocation(sourceId, targetId) {
       this.moveContentFromTo({
@@ -84,6 +99,14 @@ export default {
     updateDrakeContainers() {
       drake.containers = [];
       drake.containers.push(...this.getDrakeContainers());
+    },
+    getElementType(element) {
+      const [elementType] = ($(element)[0]).className.split(' ');
+      return elementType;
+    },
+    renderWidget(target, { type, props = {} } = {}) {
+      const componentInstance = WidgetFactoryMap.widget[type](props);
+      target.appendChild(componentInstance.$el);
     }
   },
   watch: {
