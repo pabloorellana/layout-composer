@@ -7,6 +7,7 @@
   </div>
 </template>
 <script>
+import { mapGetters, mapMutations } from 'vuex';
 import * as dragula from 'dragula';
 import Room from '@/plugins/room-manager/room/widget/Room';
 import RmServer from '@/plugins/room-manager/server/widget/Server';
@@ -25,15 +26,7 @@ export default {
     RmServer
   },
   computed: {
-    grid() {
-      return this.$store.getters.layout
-    },
-    rows() {
-      return this.$store.getters.rows
-    },
-    columns() {
-      return this.$store.getters.columns
-    }
+    ...mapGetters(['rows', 'columns', 'contentByCellId'])
   },
   mounted () {
     drake.containers.push(...this.getDrakeContainers());
@@ -49,6 +42,7 @@ export default {
     });
   },
   methods: {
+    ...mapMutations(['setContent', 'setSelectedWidget', 'moveContentFromTo', 'setSelectedWidget']),
     addNewWidGet(element, targetId) {
       // TODO config dragula to actually not to copy anything
       const tdContainer = $(`#${targetId}`)
@@ -62,25 +56,25 @@ export default {
       const [elementType] = ($(element)[0]).className.split(' ');
       const content = WidgetsMap[elementType]();
 
-      this.$store.commit('setContent', {
+      this.setContent({
         targetId,
         content
       });
 
-      this.$store.commit('setSelectedWidget', content);
+      this.setSelectedWidget(content);
 
-      const { content: widgetProps } = this.$store.getters.contentByCellId(targetId)
+      const { content: widgetProps } = this.contentByCellId(targetId)
       const componentInstance = WidgetFactoryMap.widget[elementType](widgetProps);
       tdContainer[0].appendChild(componentInstance.$el);
     },
     updateWidgetLocation(sourceId, targetId) {
-      this.$store.commit('moveContentFromTo', {
+      this.moveContentFromTo({
         from: sourceId,
         to: targetId
       });
 
-      const {content} = this.$store.getters.contentByCellId(targetId);
-      this.$store.commit('setSelectedWidget', content);
+      const {content} = this.contentByCellId(targetId);
+      this.setSelectedWidget(content);
     },
     getDrakeContainers() {
       const [source] = $('#source');

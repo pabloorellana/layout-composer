@@ -15,6 +15,7 @@
   </div>
 </template>
 <script>
+import { mapGetters, mapMutations } from 'vuex';
 import TableGenerator from "@/components/TableGenerator";
 
 export default {
@@ -22,34 +23,23 @@ export default {
     TableGenerator
   },
   computed: {
-    rows() {
-      return this.$store.getters.rows;
-    },
-    columns() {
-      return this.$store.getters.columns;
-    }
+    ...mapGetters(['rows', 'columns', 'contentByCellId'])
   },
   methods: {
     onTableChange (d) {
-      console.log('onTableChange', d)
-      this.$store.commit('setGrid', d);
-    },
-    onRowAddition(row) {
-      this.$store.commit('addGridRow', row);
-    },
-    onRowDeletion() {
-      this.$store.commit('deleteGridRow');
-    },
-    onColumnAdition(column) {
-      this.$store.commit('addGridColumn', column);
-    },
-    onColumnDeletion() {
-      this.$store.commit('deleteGridColumn');
+      this.setGrid(d);
     },
     onCellClick(cellId) {
-      const { content } = this.$store.getters.contentByCellId(cellId);
-      this.$store.commit('setSelectedWidget', content);
-    }
+      const { content } = this.contentByCellId(cellId);
+      this.setSelectedWidget(content);
+    },
+    ...mapMutations(['setGrid', 'setSelectedWidget']),
+    ...mapMutations({
+      onRowAddition: 'addGridRow',
+      onRowDeletion: 'deleteGridRow',
+      onColumnAdition: 'addGridColumn',
+      onColumnDeletion: 'deleteGridColumn'
+    })
   }
 }
 </script>

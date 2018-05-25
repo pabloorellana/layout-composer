@@ -1,12 +1,16 @@
 <template>
   <div class="room-options">
-    <b-dropdown id="rooms-dropdown" size="sm" variant="default" :text="selectedRoom.name" class="m-md-2">
-      <b-dropdown-item v-for="(room, index) in rooms" :key="index"
-        @click="selectRoom(room)">{{room.name}}</b-dropdown-item>
-    </b-dropdown>
+    <div class="form-group">
+      <label for="rooms-dropdown">Room Assigned</label>
+      <b-dropdown id="rooms-dropdown" size="sm" variant="default" :text="selectedRoom.name" class="m-md-2">
+        <b-dropdown-item v-for="(room, index) in rooms" :key="index"
+          @click="selectRoom(room)">{{room.name}}</b-dropdown-item>
+      </b-dropdown>
+    </div>
   </div>
 </template>
 <script>
+import { mapGetters } from 'vuex';
 import bDropdown from 'bootstrap-vue/es/components/dropdown/dropdown';
 
 export default {
@@ -19,9 +23,7 @@ export default {
     }
   },
   computed: {
-    rooms() {
-      return this.$store.getters.rooms
-    }
+    ...mapGetters(['rooms']),
   },
   methods: {
     selectRoom(room) {

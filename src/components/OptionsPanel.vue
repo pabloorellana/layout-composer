@@ -9,6 +9,7 @@
   </div>
 </template>
 <script>
+import { mapGetters } from 'vuex';
 import Grid from '@/components/options/Grid';
 import WidgetFactoryMap from '@/plugins/room-manager/WidgetFactoryMap';
 
@@ -17,9 +18,7 @@ export default {
     Grid
   },
   computed: {
-    selectedWidget() {
-      return this.$store.getters.selectedWidget
-    }
+    ...mapGetters(['selectedWidget'])
   },
   watch: {
     selectedWidget(newVal, oldVal) {

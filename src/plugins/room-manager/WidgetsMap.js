@@ -2,7 +2,7 @@ export default {
   'room': function() {
     return {
       type: 'room',
-      id: '',
+      _id: '',
       name: ''
     }
   },

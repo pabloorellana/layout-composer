@@ -13,6 +13,8 @@ export default new Vuex.Store({
       grid: []
     },
     selectedWidget: undefined,
+    // TODO suppor move content from one cell containing multiple widgets
+    rooms: []
   },
   getters: {
     layout: state => state.layout,
@@ -21,6 +23,7 @@ export default new Vuex.Store({
     grid: state => state.layout.grid,
     selectedWidget: state => state.selectedWidget,
     contentByCellId: state => (cellId) => getCell(state.layout.grid, cellId),
+    // TODO suppor move content from one cell containing multiple widgets
     rooms: state => state.rooms
   },
   mutations: {
@@ -48,9 +51,12 @@ export default new Vuex.Store({
       delete source.content;
     },
     setSelectedWidget: (state, widget) => state.selectedWidget = widget,
-    addToState: (state, { key, data }) => state[key] = data,
-    setSelectedRoom: (state, {id, name}) => {
-      state.selectedWidget.id = id;
+    // TODO, move to RM plugin store
+    setRooms: (state, payload) => {
+      state.rooms = payload;
+    },
+    setSelectedRoom: (state, {_id, name}) => {
+      state.selectedWidget._id = _id;
       state.selectedWidget.name = name
     },
   },
