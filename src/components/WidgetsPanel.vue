@@ -34,11 +34,19 @@ export default {
       const targetId = target.id;
       const cameFromBar = $(source).is('#source');
 
+      // If widget is dragged to the delete area, remove it
+      if (targetId === 'delete-area') {
+        return this.deleteWidget(el, source);
+      }
+
+      // If widget was not dragged from the widget bar, then update its position
       if (!cameFromBar) {
         return this.updateWidgetLocation(source.id, targetId);
       }
 
-      // Cancelling drop event so we can instantiate the vue components
+      // If no prior condition is met, then it should be a new widget
+
+      // Cancelling drop event so we can instantiate the vue component
       // instead of relaying in dragula's DOM copy
       drake.cancel(true);
 
@@ -57,7 +65,8 @@ export default {
       'setContent',
       'setSelectedWidget',
       'moveContentFromTo',
-      'setSelectedWidget'
+      'setSelectedWidget',
+      'deleteContent'
     ]),
     addServiceWidget(element) {
       // TODO: in order to recognize the element that was dropped into
@@ -90,6 +99,10 @@ export default {
 
       const {content} = this.contentByCellId(targetId);
       this.setSelectedWidget(content);
+    },
+    deleteWidget(element, source) {
+      this.deleteContent(source.id);
+      $(element).remove();
     },
     getDrakeContainers() {
       const [source] = $('#source');

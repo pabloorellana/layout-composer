@@ -13,6 +13,7 @@
         @cell-clicked="onCellClick"
         ></table-generator>
     </div>
+    <div id="delete-area" class="copy-target text-center">Delete</div>
   </div>
 </template>
 <script>
@@ -61,6 +62,15 @@ export default {
     margin: 0px auto;
     width: 400px;
     height: 50px;
+    width: 100%;
+  }
+
+  #delete-area {
+    border: 2px dotted blue;
+    margin: 0px auto;
+    width: 400px;
+    height: 50px;
+    width: 100%;
   }
 }
 </style>

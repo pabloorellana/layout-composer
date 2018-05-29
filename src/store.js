@@ -38,6 +38,13 @@ export default new Vuex.Store({
       cell.content = [content];*/
       cell.content = content;
     },
+    deleteContent: (state, cellId) => {
+      const cell = getCell(state.layout.grid, cellId);
+
+      if (cell) {
+        delete cell.content;
+      }
+    },
     addGridRow: (state, payload) => state.layout.grid.push(payload),
     addGridColumn: (state, payload) => state.layout.grid.forEach((row, index) => row.push(payload[index])),
     deleteGridRow: (state, payload) => state.layout.grid.splice(-1, 1),
