@@ -26,7 +26,7 @@ export default {
         this.$refs.container.removeChild(this.$refs.container.firstChild);
       }
       if (newVal) {
-        const componentInstance = WidgetFactoryMap.config[newVal.type]();
+        const componentInstance = WidgetFactoryMap.config[newVal.type](newVal, this.$store);
         this.$refs.container.appendChild(componentInstance.$el);
       }
     }

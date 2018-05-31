@@ -10,11 +10,10 @@ export default new Vuex.Store({
       backgroundColor: '#000',
       rows: 4,
       columns: 3,
-      grid: []
+      grid: [],
+      apps: []
     },
-    selectedWidget: undefined,
-    // TODO suppor move content from one cell containing multiple widgets
-    rooms: []
+    selectedWidget: undefined
   },
   getters: {
     layout: state => state.layout,
@@ -23,8 +22,7 @@ export default new Vuex.Store({
     grid: state => state.layout.grid,
     selectedWidget: state => state.selectedWidget,
     contentByCellId: state => (cellId) => getCell(state.layout.grid, cellId),
-    // TODO suppor move content from one cell containing multiple widgets
-    rooms: state => state.rooms
+    appByNamespace: state => (namespace) => state.layout.apps.find(app => app.namespace === namespace)
   },
   mutations: {
     setGrid: (state, payload) => state.layout.grid = payload,
@@ -45,6 +43,7 @@ export default new Vuex.Store({
         delete cell.content;
       }
     },
+    addApp: (state, payload) => state.layout.apps.push(payload),
     addGridRow: (state, payload) => state.layout.grid.push(payload),
     addGridColumn: (state, payload) => state.layout.grid.forEach((row, index) => row.push(payload[index])),
     deleteGridRow: (state, payload) => state.layout.grid.splice(-1, 1),
@@ -57,15 +56,7 @@ export default new Vuex.Store({
       target.content = source.content;
       delete source.content;
     },
-    setSelectedWidget: (state, widget) => state.selectedWidget = widget,
-    // TODO, move to RM plugin store
-    setRooms: (state, payload) => {
-      state.rooms = payload;
-    },
-    setSelectedRoom: (state, {_id, name}) => {
-      state.selectedWidget._id = _id;
-      state.selectedWidget.name = name
-    },
+    setSelectedWidget: (state, widget) => state.selectedWidget = widget
   },
   actions: {
 

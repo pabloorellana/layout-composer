@@ -11,6 +11,7 @@ import { mapGetters, mapMutations } from 'vuex';
 import * as dragula from 'dragula';
 import Room from '@/plugins/room-manager/room/widget/Room';
 import RmServer from '@/plugins/room-manager/server/widget/Server';
+import RmStore from '@/plugins/room-manager/store';
 import WidgetsMap from '@/plugins/room-manager/WidgetsMap';
 import WidgetFactoryMap from '@/plugins/room-manager/WidgetFactoryMap';
 
@@ -36,7 +37,7 @@ export default {
     RmServer
   },
   computed: {
-    ...mapGetters(['rows', 'columns', 'contentByCellId'])
+    ...mapGetters(['rows', 'columns', 'contentByCellId', 'appByNamespace'])
   },
   mounted () {
     drake.containers.push(...this.getDrakeContainers());
@@ -79,15 +80,22 @@ export default {
       'setSelectedWidget',
       'moveContentFromTo',
       'setSelectedWidget',
-      'deleteContent'
+      'deleteContent',
+      'addApp'
     ]),
     addServiceWidget(elementType) {
-      const widgetModel = WidgetsMap[elementType]();
+      const namespace = `module-${Date.now()}`;
+      const widgetModel = {namespace, ...WidgetsMap[elementType]()};
 
+      this.addApp(widgetModel);
       this.setSelectedWidget(widgetModel);
 
-      //const { content: widgetProps } = this.contentByCellId(targetId)
-      this.renderWidget($(`#services-container`)[0], { type: elementType, props: widgetModel })
+      const { content: widgetProps } = this.appByNamespace(namespace)
+
+      // registering newly created module
+      this.$store.registerModule(namespace, RmStore);
+
+      this.renderWidget($(`#services-container`)[0], { type: elementType, props: widgetProps })
     },
     addNewWidGet(elementType, targetId) {
       const widgetModel = WidgetsMap[elementType]();
@@ -125,7 +133,7 @@ export default {
       return elementType;
     },
     renderWidget(target, { type, props = {} } = {}) {
-      const componentInstance = WidgetFactoryMap.widget[type](props);
+      const componentInstance = WidgetFactoryMap.widget[type](props, this.$store);
       target.appendChild(componentInstance.$el);
     }
   },

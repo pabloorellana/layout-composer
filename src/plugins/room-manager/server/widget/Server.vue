@@ -10,7 +10,8 @@ export default {
 <style lang="less" scoped>
 .room-manager-server {
   height: 100%;
-  max-width: 100%;
+  width: 150px;
+  float: left;
   border: 2px dotted green;
 }
 </style>

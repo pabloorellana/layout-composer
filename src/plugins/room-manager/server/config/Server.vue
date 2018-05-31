@@ -31,16 +31,16 @@
 import axios from 'axios';
 
 export default {
+  props: ['namespace'],
   data() {
     return {
-      connectionName: '',
-      serverUrl: 'http://localhost:7070',
       services: [],
       selectedService: undefined
     }
   },
   mounted() {
-    this.connect()
+    //this.connect();
+    //serverUrl: 'http://localhost:7070'
   },
   methods: {
     async connect() {
@@ -52,16 +52,34 @@ export default {
       }
 
       this.selectedService = data[0];
-      this.setRooms();
+      this.getRooms();
     },
-    async setRooms() {
+    async getRooms() {
       // TODO
       // Pending, select rooms by service instance
       //          add flat to enable/disable rooms
       const {data} = await axios.get(`${this.serverUrl}/api/v1/rooms`);
       const rooms = data.filter(room => room.service === this.selectedService._id);
-      this.$store.commit('setRooms', rooms);
+      this.$store.commit(`${this.namespace}/setRooms`, rooms);
     }
+  },
+  computed: {
+    connectionName: {
+      get() {
+        return this.$store.getters[`${this.namespace}/connectionName`];
+      },
+      set(value) {
+        this.$store.commit(`${this.namespace}/setConnectionName`, value);
+      }
+    },
+    serverUrl: {
+      get() {
+        return this.$store.getters[`${this.namespace}/serverUrl`];
+      },
+      set(value) {
+        this.$store.commit(`${this.namespace}/setServerUrl`, value);
+      }
+    },
   }
 }
 </script>
