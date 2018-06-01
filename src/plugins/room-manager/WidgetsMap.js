@@ -3,7 +3,8 @@ export default {
     return {
       type: 'room',
       _id: '',
-      name: ''
+      name: '',
+      namespace: 'room-manager'
     }
   },
   'room-manager-server': function() {
@@ -14,7 +15,8 @@ export default {
       credentials: {
         user: '',
         password: ''
-      }
+      },
+      namespace: 'room-manager'
     }
   }
 }
