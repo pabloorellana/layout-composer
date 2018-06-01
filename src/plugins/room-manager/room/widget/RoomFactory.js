@@ -1,8 +1,7 @@
 import Vue from 'vue';
-import store from '@/store';
 import RoomWidgetComponent from './Room';
 
-export default function (props) {
+export default function (props, store) {
   const Component = Vue.extend(RoomWidgetComponent);
   const instance = new Component({ store, propsData: { roomInfo: props } });
   instance.$mount();

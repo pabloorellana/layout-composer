@@ -28,10 +28,10 @@
   </div>
 </template>
 <script>
+import { mapMutations } from 'vuex';
 import axios from 'axios';
 
 export default {
-  props: ['namespace'],
   data() {
     return {
       services: [],
@@ -43,6 +43,11 @@ export default {
     //serverUrl: 'http://localhost:7070'
   },
   methods: {
+    ...mapMutations('room-manager', [
+      'setRooms',
+      'setConnectionName',
+      'setServerUrl'
+    ]),
     async connect() {
       const {data} = await axios.get(`${this.serverUrl}/api/v1/services`);
       if (data.length > 1) {
@@ -60,24 +65,24 @@ export default {
       //          add flat to enable/disable rooms
       const {data} = await axios.get(`${this.serverUrl}/api/v1/rooms`);
       const rooms = data.filter(room => room.service === this.selectedService._id);
-      this.$store.commit(`${this.namespace}/setRooms`, rooms);
+      this.setRooms(rooms);
     }
   },
   computed: {
     connectionName: {
       get() {
-        return this.$store.getters[`${this.namespace}/connectionName`];
+        return this.$store.getters['room-manager/connectionName'];
       },
       set(value) {
-        this.$store.commit(`${this.namespace}/setConnectionName`, value);
+        this.setConnectionName(value);
       }
     },
     serverUrl: {
       get() {
-        return this.$store.getters[`${this.namespace}/serverUrl`];
+        return this.$store.getters['room-manager/serverUrl'];
       },
       set(value) {
-        this.$store.commit(`${this.namespace}/setServerUrl`, value);
+        this.setServerUrl(value);
       }
     },
   }

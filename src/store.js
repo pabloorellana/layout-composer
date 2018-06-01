@@ -56,7 +56,8 @@ export default new Vuex.Store({
       target.content = source.content;
       delete source.content;
     },
-    setSelectedWidget: (state, widget) => state.selectedWidget = widget
+    setSelectedWidget: (state, widget) => state.selectedWidget = widget,
+    patchSelectedWidget: (state, widget) => Object.assign(state.selectedWidget, widget)
   },
   actions: {
 

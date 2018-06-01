@@ -1,10 +1,9 @@
 import Vue from 'vue';
-import store from '@/store';
 import RoomComponent from './Room';
 
-export default function () {
+export default function (props, store) {
   const Component = Vue.extend(RoomComponent);
-  const instance = new Component({ store });
+  const instance = new Component({ store, propsData: props });
   instance.$mount();
   return instance;
 }

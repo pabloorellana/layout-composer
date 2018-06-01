@@ -24,10 +24,9 @@ export default {
     setServerUrl: (state, serverUrl) => {
       state.serverUrl = serverUrl
     },
-    setSelectedRoom: (state, {_id, name}) => {
-      //state.selectedWidget._id = _id;
-      //state.selectedWidget.name = name
-    },
+    setSelectedRoom(state, {_id, name, type}) {
+      this.commit('patchSelectedWidget', {_id, name, type}, { root: true });
+    }
   },
   actions: {}
 }

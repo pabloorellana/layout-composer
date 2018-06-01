@@ -3,7 +3,7 @@
     <div v-if="!rooms.length">
       <span>No Room Manager Service has been added yet.</span>
     </div>
-    <div class="form-group" v-if="rooms.length">
+    <div class="form-group" v-if="rooms && rooms.length">
       <label for="rooms-dropdown">Room Assigned</label>
       <b-dropdown id="rooms-dropdown" size="sm" variant="default" :text="selectedRoom.name" class="m-md-2">
         <b-dropdown-item v-for="(room, index) in rooms" :key="index"
@@ -26,12 +26,12 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['rooms']),
+    ...mapGetters('room-manager', ['rooms']),
   },
   methods: {
     selectRoom(room) {
       this.selectedRoom = room;
-      this.$store.commit('setSelectedRoom', room);
+      this.$store.commit('room-manager/setSelectedRoom', { _id: room._id, name: room.name, type: 'room' });
     }
   }
 }

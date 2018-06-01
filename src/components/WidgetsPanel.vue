@@ -84,7 +84,8 @@ export default {
       'addApp'
     ]),
     addServiceWidget(elementType) {
-      const namespace = `module-${Date.now()}`;
+      // TODO, namespace should come from every app plugin config
+      const namespace = 'room-manager';
       const widgetModel = {namespace, ...WidgetsMap[elementType]()};
 
       this.addApp(widgetModel);
