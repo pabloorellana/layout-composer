@@ -1,6 +1,6 @@
 <template>
   <div id="composer" class="row">
-    <div id="services-container" class="copy-target"></div>
+    <div id="apps-container" class="copy-target"></div>
     <div class="table-container">
       <table-generator
         :rows="rows"
@@ -57,7 +57,7 @@ export default {
     height: 600px;
   }
 
-  #services-container {
+  #apps-container {
     border: 2px dotted blue;
     margin: 0px auto;
     width: 400px;

@@ -22,10 +22,11 @@ const drake = dragula({
   },
   accepts(el, {id: targetId}, {id: sourceId}) {
     const isServiceWidget = $(el).hasClass("no-layout");
+
     return !(
-      (sourceId === 'services-container' && targetId !== 'delete-area') ||
-      (sourceId !== 'widget-source' && targetId === 'services-container') ||
-      (!isServiceWidget && targetId === 'services-container') ||
+      (sourceId === 'apps-container' && targetId !== 'delete-area') ||
+      (sourceId !== 'widget-source' && targetId === 'apps-container') ||
+      (!isServiceWidget && targetId === 'apps-container') ||
       targetId === 'widget-source'
     );
   }
@@ -64,7 +65,7 @@ export default {
       // instead of relaying in dragula's DOM copy
       drake.cancel(true);
 
-      //TODO, "service" type widgets should have the "no-layout" class in their
+      //TODO, "app" type widgets should have the "no-layout" class in their
       //main container in order to be recognized
       const isServiceWidget = $(el).hasClass("no-layout");
       if (isServiceWidget) {
@@ -96,7 +97,7 @@ export default {
       // registering newly created module
       this.$store.registerModule(namespace, RmStore);
 
-      this.renderWidget($(`#services-container`)[0], { type: elementType, props: widgetProps })
+      this.renderWidget($(`#apps-container`)[0], { type: elementType, props: widgetProps })
     },
     addNewWidGet(elementType, targetId) {
       const widgetModel = WidgetsMap[elementType]();
