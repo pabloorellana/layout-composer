@@ -2,11 +2,11 @@
   <div class="grid-options">
     <div class="form-group">
       <label for="height">Height</label>
-      <input id="height" class="form-control" type="number" v-model="rows">
+      <input id="height" class="form-control" type="number" min="1" v-model="rows">
     </div>
     <div class="form-group">
       <label for="width">Width</label>
-      <input id="width" class="form-control" type="number" v-model="columns">
+      <input id="width" class="form-control" type="number" min="1" v-model="columns">
     </div>
     <router-link to="/preview">Preview</router-link>
   </div>

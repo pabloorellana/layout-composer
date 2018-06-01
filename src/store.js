@@ -1,35 +1,37 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
+import Vue from 'vue';
+import Vuex from 'vuex';
 
-Vue.use(Vuex)
+Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    layout: {
-      id: 'lay1',
-      backgroundColor: '#000',
-      rows: 4,
-      columns: 3,
+    composer: {
+      id: 'layout-1',
+      layout: {
+        rows: 4,
+        columns: 3,
+        backgroundColor: '#000',
+      },
       grid: [],
       apps: []
     },
     selectedWidget: undefined
   },
   getters: {
-    layout: state => state.layout,
-    rows: state => state.layout.rows,
-    columns: state => state.layout.columns,
-    grid: state => state.layout.grid,
+    layout: state => state.composer.layout,
+    rows: state => state.composer.layout.rows,
+    columns: state => state.composer.layout.columns,
+    grid: state => state.composer.grid,
     selectedWidget: state => state.selectedWidget,
-    contentByCellId: state => (cellId) => getCell(state.layout.grid, cellId),
-    appByNamespace: state => (namespace) => state.layout.apps.find(app => app.namespace === namespace)
+    contentByCellId: state => (cellId) => getCell(state.composer.grid, cellId),
+    appByNamespace: state => (namespace) => state.composer.apps.find(app => app.namespace === namespace)
   },
   mutations: {
-    setGrid: (state, payload) => state.layout.grid = payload,
-    setRows: (state, payload) => state.layout.rows = payload,
-    setColumns: (state, payload) => state.layout.columns = payload,
+    setGrid: (state, grid) => state.composer.grid = grid,
+    setRows: (state, rows) => state.composer.layout.rows = rows,
+    setColumns: (state, columns) => state.composer.layout.columns = columns,
     setContent: (state, { targetId, content }) => {
-      const cell = getCell(state.layout.grid, targetId);
+      const cell = getCell(state.composer.grid, targetId);
       /*if (cell.hasOwnProperty('content') && Array.isArray(cell.content)) {
         return cell.content.push(content);
       }
@@ -37,21 +39,21 @@ export default new Vuex.Store({
       cell.content = content;
     },
     deleteContent: (state, cellId) => {
-      const cell = getCell(state.layout.grid, cellId);
+      const cell = getCell(state.composer.grid, cellId);
 
       if (cell) {
         delete cell.content;
       }
     },
-    addApp: (state, payload) => state.layout.apps.push(payload),
-    addGridRow: (state, payload) => state.layout.grid.push(payload),
-    addGridColumn: (state, payload) => state.layout.grid.forEach((row, index) => row.push(payload[index])),
-    deleteGridRow: (state, payload) => state.layout.grid.splice(-1, 1),
-    deleteGridColumn: (state, payload) => state.layout.grid.forEach((row, index) => row.splice(-1, 1)),
+    addApp: (state, app) => state.composer.apps.push(app),
+    addGridRow: (state, row) => state.composer.grid.push(row),
+    addGridColumn: (state, column) => state.composer.grid.forEach((row, index) => row.push(column[index])),
+    deleteGridRow: (state) => state.composer.grid.splice(-1, 1),
+    deleteGridColumn: (state) => state.composer.grid.forEach((row, index) => row.splice(-1, 1)),
     moveContentFromTo: (state, { from, to }) => {
       // TODO suppor move content from one cell containing multiple widgets
-      const source = getCell(state.layout.grid, from);
-      const target = getCell(state.layout.grid, to);
+      const source = getCell(state.composer.grid, from);
+      const target = getCell(state.composer.grid, to);
 
       target.content = source.content;
       delete source.content;
