@@ -1,5 +1,5 @@
 <template>
-  <div class="room-manager-server text-center no-layout">
+  <div class="room-manager-server text-center no-layout" lc-namespace="room-manager" lc-widget="room-manager-server">
     <label>RM Service</label>
   </div>
 </template>

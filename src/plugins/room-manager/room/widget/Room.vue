@@ -1,5 +1,5 @@
 <template>
-  <div class="room">
+  <div class="room" lc-namespace="room-manager" lc-widget="room">
     <label>{{roomInfo.name}}</label>
   </div>
 </template>

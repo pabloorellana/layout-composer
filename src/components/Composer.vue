@@ -1,6 +1,6 @@
 <template>
   <div id="composer" class="row">
-    <div id="apps-container" class="copy-target"></div>
+    <div id="apps-container" class="copy-target" @click="selectApp"></div>
     <div class="table-container">
       <table-generator
         :rows="rows"
@@ -25,16 +25,9 @@ export default {
     TableGenerator
   },
   computed: {
-    ...mapGetters(['rows', 'columns', 'contentByCellId'])
+    ...mapGetters(['rows', 'columns', 'contentByCellId', 'appByNamespace'])
   },
   methods: {
-    onTableChange (d) {
-      this.setGrid(d);
-    },
-    onCellClick(cellId) {
-      const { content } = this.contentByCellId(cellId);
-      this.setSelectedWidget(content);
-    },
     ...mapMutations([
       'setGrid',
       'setSelectedWidget',
@@ -43,6 +36,32 @@ export default {
       'addGridColumn',
       'deleteGridColumn'
     ]),
+    onTableChange (d) {
+      this.setGrid(d);
+    },
+    onCellClick(cellId) {
+      const { content } = this.contentByCellId(cellId);
+      this.setSelectedWidget(content);
+    },
+    selectApp({target}) {
+      if (target.id === 'apps-container') {
+        return this.setSelectedWidget(undefined);
+      }
+
+      const isApp = $(target).attr('lc-widget');
+      const namespace = $(isApp ? target : this.getAppWidget(target)).attr('lc-namespace');
+
+      this.setSelectedWidget(this.appByNamespace(namespace));
+    },
+    getAppWidget(element) {
+      const isApp = $(element).attr('lc-widget');
+
+      if (!isApp) {
+        return this.getAppWidget($(element).parent());
+      }
+
+      return element[0];
+    }
   }
 }
 </script>

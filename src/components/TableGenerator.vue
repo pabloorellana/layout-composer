@@ -36,16 +36,25 @@ export default {
         }));
       });
     },
-    selectCell(arg) {
-      const cellWasClicked = $(arg.target).hasClass('cell');
+    selectCell({target}) {
+      const isCell = $(target).hasClass('cell');
 
-      if (!cellWasClicked) {
-        const [clickedCell] = $(arg.target).parent();
+      if (!isCell) {
+        const [clickedCell] = this.getParentCell(target);
 
         return this.$emit('cell-clicked', clickedCell.id)
       }
 
-      this.$emit('cell-clicked', arg.target.id)
+      this.$emit('cell-clicked', target.id)
+    },
+    getParentCell(element) {
+      const isCell = $(element).hasClass('cell');
+
+      if (!isCell) {
+        return this.getParentCell($(element).parent());
+      }
+
+      return element;
     }
   },
   watch: {
