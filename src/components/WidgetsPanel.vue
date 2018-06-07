@@ -21,12 +21,12 @@ const drake = dragula({
     return sourceId === 'widget-source';
   },
   accepts(el, {id: targetId}, {id: sourceId}) {
-    const isServiceWidget = $(el).hasClass("no-layout");
+    const isAppWidget = $(el).attr('lc-type') === 'app';
 
     return !(
       (sourceId === 'apps-container' && targetId !== 'delete-area') ||
       (sourceId !== 'widget-source' && targetId === 'apps-container') ||
-      (!isServiceWidget && targetId === 'apps-container') ||
+      (!isAppWidget && targetId === 'apps-container') ||
       targetId === 'widget-source'
     );
   }
@@ -43,14 +43,19 @@ export default {
   mounted () {
     drake.containers.push(...this.getDrakeContainers());
     drake.on('drop', (el, {id: targetId}, {id: sourceId}) => {
-      // TODO: in order to recognize the element that was dropped into
-      // the table, the element has to be wraped in a "div" containing
-      // a class with a name mapped in WidgetsMap in order to
-      // get the data that this component should bind in the store
-      const elementType = this.getElementType(el);
+      const widgetName = this.getWidgetName(el);
 
       // If widget is dragged to the delete area, remove it
       if (targetId === 'delete-area') {
+        const widgetType = this.getWidgetType(el);
+
+        if (widgetType === 'app') {
+          // TODO remove widgets bound to this app?
+          this.setSelectedWidget(null);
+          const namespace = this.getWidgetNamespace(el);
+          return this.deleteRegisteredApp(el, namespace);
+        }
+
         return this.deleteWidget(el, sourceId);
       }
 
@@ -65,14 +70,12 @@ export default {
       // instead of relaying in dragula's DOM copy
       drake.cancel(true);
 
-      //TODO, "app" type widgets should have the "no-layout" class in their
-      //main container in order to be recognized
-      const isServiceWidget = $(el).hasClass("no-layout");
-      if (isServiceWidget) {
-        return this.addServiceWidget(elementType);
+      const isAppWidget = this.getWidgetType(el) === 'app';
+      if (isAppWidget) {
+        return this.addAppWidget(widgetName);
       }
 
-      this.addNewWidGet(elementType, targetId);
+      this.addNewWidGet(widgetName, targetId);
     });
   },
   methods: {
@@ -82,31 +85,30 @@ export default {
       'moveContentFromTo',
       'setSelectedWidget',
       'deleteContent',
-      'addApp'
+      'addApp',
+      'deleteApp'
     ]),
-    addServiceWidget(elementType) {
-      // TODO, namespace should come from every app plugin config
-      const namespace = 'room-manager';
-      const widgetModel = WidgetsMap[elementType]();
+    addAppWidget(widgetName) {
+      const widgetModel = WidgetsMap[widgetName]();
 
       this.addApp(widgetModel);
       this.setSelectedWidget(widgetModel);
 
-      const { content: widgetProps } = this.appByNamespace(namespace)
+      const { content: widgetProps } = this.appByNamespace(widgetModel.namespace)
 
       // registering newly created module
-      this.$store.registerModule(namespace, RmStore);
+      this.$store.registerModule(widgetModel.namespace, RmStore);
 
-      this.renderWidget($(`#apps-container`)[0], { type: elementType, props: widgetProps })
+      this.renderWidget($(`#apps-container`)[0], { type: widgetName, props: widgetProps })
     },
-    addNewWidGet(elementType, targetId) {
-      const widgetModel = WidgetsMap[elementType]();
+    addNewWidGet(widgetName, targetId) {
+      const widgetModel = WidgetsMap[widgetName]();
 
       this.setContent({ targetId, content: widgetModel });
       this.setSelectedWidget(widgetModel);
 
       const { content: widgetProps } = this.contentByCellId(targetId);
-      this.renderWidget($(`#${targetId}`)[0], { type: elementType, props: widgetProps })
+      this.renderWidget($(`#${targetId}`)[0], { type: widgetName, props: widgetProps })
     },
     updateWidgetLocation(sourceId, targetId) {
       this.moveContentFromTo({
@@ -116,6 +118,10 @@ export default {
 
       const {content} = this.contentByCellId(targetId);
       this.setSelectedWidget(content);
+    },
+    deleteRegisteredApp(element, namespace) {
+      this.deleteApp(namespace);
+      $(element).remove();
     },
     deleteWidget(element, sourceId) {
       this.deleteContent(sourceId);
@@ -130,9 +136,20 @@ export default {
       drake.containers = [];
       drake.containers.push(...this.getDrakeContainers());
     },
-    getElementType(element) {
-      const [elementType] = ($(element)[0]).className.split(' ');
-      return elementType;
+    getWidgetName(element) {
+      // In order to identify a widget, it must contain the attribute
+      // "lc-widget" with its name
+      return $(element).attr('lc-widget');
+    },
+    getWidgetType(element) {
+      // In order to identify the type of a widget, it must contain the attribute
+      // "lc-type" with its name
+      return $(element).attr('lc-type');
+    },
+    getWidgetNamespace(element) {
+      // In order to identify the namespace of a widget, it must contain the attribute
+      // "lc-namespace" with its name
+      return $(element).attr('lc-namespace');
     },
     renderWidget(target, { type, props = {} } = {}) {
       const componentInstance = WidgetFactoryMap.widget[type](props, this.$store);

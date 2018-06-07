@@ -1,5 +1,5 @@
 <template>
-  <div class="room" lc-namespace="room-manager" lc-widget="room">
+  <div class="room-widget" lc-namespace="room-manager" lc-widget="room">
     <label>{{roomInfo.name}}</label>
   </div>
 </template>
@@ -15,7 +15,7 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-.room {
+.room-widget {
   color: #fff;
   text-align: center;
   height: 100%;

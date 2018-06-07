@@ -4,6 +4,7 @@ import Vuex from 'vuex';
 Vue.use(Vuex);
 
 export default new Vuex.Store({
+  strict: true,
   state: {
     composer: {
       id: 'layout-1',
@@ -46,6 +47,23 @@ export default new Vuex.Store({
       }
     },
     addApp: (state, app) => state.composer.apps.push(app),
+    deleteApp(state, namespace) {
+      const appIndex = state.composer.apps.findIndex(app => app.namespace === namespace);
+      state.composer.apps.splice(appIndex, 1);
+      try {
+        this.unregisterModule(namespace);
+      } catch (e) {
+        // usually throws an exception when the namespace is not register or does not exist
+        console.warn(e)
+      }
+    },
+    deleteWidgetsByNamespace(state, namespace) {
+      state.composer.grid.forEach(row => row.forEach(cell => {
+        if (cell.content && cell.content.namespace && cell.content.namespace === namespace) {
+          delete cell.content
+        }
+      }));
+    },
     addGridRow: (state, row) => state.composer.grid.push(row),
     addGridColumn: (state, column) => state.composer.grid.forEach((row, index) => row.push(column[index])),
     deleteGridRow: (state) => state.composer.grid.splice(-1, 1),

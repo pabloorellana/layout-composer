@@ -1,5 +1,5 @@
 <template>
-  <div class="room-manager-server text-center no-layout" lc-namespace="room-manager" lc-widget="room-manager-server">
+  <div class="server-widget text-center" lc-type="app" lc-namespace="room-manager" lc-widget="room-manager-server">
     <label>RM Service</label>
   </div>
 </template>
@@ -8,7 +8,7 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-.room-manager-server {
+.server-widget {
   height: 100%;
   width: 150px;
   float: left;
