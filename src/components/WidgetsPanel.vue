@@ -14,6 +14,7 @@ import RmServer from '@/plugins/room-manager/server/widget/Server';
 import RmStore from '@/plugins/room-manager/store';
 import WidgetsMap from '@/plugins/room-manager/WidgetsMap';
 import WidgetFactoryMap from '@/plugins/room-manager/WidgetFactoryMap';
+import ComponentsRegistry from '@/components-registry';
 
 const drake = dragula({
   revertOnSpill: true,
@@ -38,7 +39,7 @@ export default {
     RmServer
   },
   computed: {
-    ...mapGetters(['rows', 'columns', 'contentByCellId', 'appByNamespace'])
+    ...mapGetters(['rows', 'columns', 'contentByCellId', 'appByNamespace', 'cellsByNamespace'])
   },
   mounted () {
     drake.containers.push(...this.getDrakeContainers());
@@ -99,7 +100,8 @@ export default {
       // registering newly created module
       this.$store.registerModule(widgetModel.namespace, RmStore);
 
-      this.renderWidget($(`#apps-container`)[0], { type: widgetName, props: widgetProps })
+      const componentInstance = this.instantiateComponent({ type: widgetName, props: widgetProps });
+      this.renderWidget($(`#apps-container`)[0], componentInstance)
     },
     addNewWidGet(widgetName, targetId) {
       const widgetModel = WidgetsMap[widgetName]();
@@ -108,7 +110,8 @@ export default {
       this.setSelectedWidget(widgetModel);
 
       const { content: widgetProps } = this.contentByCellId(targetId);
-      this.renderWidget($(`#${targetId}`)[0], { type: widgetName, props: widgetProps })
+      const componentInstance = this.instantiateComponent({ type: widgetName, props: widgetProps });
+      this.renderWidget($(`#${targetId}`)[0], componentInstance)
     },
     updateWidgetLocation(sourceId, targetId) {
       this.moveContentFromTo({
@@ -120,10 +123,18 @@ export default {
       this.setSelectedWidget(content);
     },
     deleteRegisteredApp(element, namespace) {
+      this.destroyComponentByUUID(this.getWidgetUUID(element));
+      this.deleteAllWidgetsByNamespace(namespace);
       this.deleteApp(namespace);
       $(element).remove();
     },
+    deleteAllWidgetsByNamespace(namespace) {
+      this.cellsByNamespace(namespace)
+        .map(cell => [($(`#${cell.id}`)[0]).children[0], cell.id])
+        .forEach(tuple => this.deleteWidget(...tuple))
+    },
     deleteWidget(element, sourceId) {
+      this.destroyComponentByUUID(this.getWidgetUUID(element));
       this.deleteContent(sourceId);
       $(element).remove();
     },
@@ -151,9 +162,28 @@ export default {
       // "lc-namespace" with its name
       return $(element).attr('lc-namespace');
     },
-    renderWidget(target, { type, props = {} } = {}) {
-      const componentInstance = WidgetFactoryMap.widget[type](props, this.$store);
+    getWidgetUUID(element) {
+      // In order to identify an instance of a widget, it must contain the attribute
+      // "lc-uuid" with its name
+      return $(element).attr('lc-uuid');
+    },
+    renderWidget(target, componentInstance) {
+      // set a unique uuid to every component so it is easier to identify the vue component instance
+      $(componentInstance.$el).attr('lc-uuid', componentInstance.uuid);
       target.appendChild(componentInstance.$el);
+    },
+    instantiateComponent({ type, props = {} } = {}) {
+      const componentInstance = WidgetFactoryMap.widget[type](props, this.$store);
+      ComponentsRegistry[componentInstance.uuid] = componentInstance;
+      return componentInstance;
+    },
+    destroyComponentByUUID(uuid) {
+      if (!ComponentsRegistry[uuid]) {
+        return;
+      }
+
+      ComponentsRegistry[uuid].$destroy();
+      delete ComponentsRegistry[uuid];
     }
   },
   watch: {

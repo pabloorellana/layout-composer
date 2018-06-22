@@ -12,6 +12,7 @@
 import { mapGetters } from 'vuex';
 import Grid from '@/components/options/Grid';
 import WidgetFactoryMap from '@/plugins/room-manager/WidgetFactoryMap';
+import ComponentsRegistry from '@/components-registry';
 
 export default {
   components: {
@@ -23,13 +24,41 @@ export default {
   watch: {
     selectedWidget(newVal, oldVal) {
       while (this.$refs.container.firstChild) {
-        this.$refs.container.removeChild(this.$refs.container.firstChild);
+        const currentLiveComponent = this.$refs.container.firstChild;
+        this.destroyComponentByUUID(this.getWidgetUUID($(currentLiveComponent)));
+        this.$refs.container.removeChild(currentLiveComponent);
       }
+
       if (newVal) {
-        const componentInstance = WidgetFactoryMap.config[newVal.type](newVal, this.$store);
-        this.$refs.container.appendChild(componentInstance.$el);
+        const componentInstance = this.instantiateComponent({ type: newVal.type, props: newVal })
+        this.renderWidget(this.$refs.container, componentInstance);
       }
     }
+  },
+  methods: {
+    instantiateComponent({ type, props = {} } = {}) {
+      const componentInstance = WidgetFactoryMap.config[type](props, this.$store);
+      ComponentsRegistry[componentInstance.uuid] = componentInstance;
+      return componentInstance;
+    },
+    renderWidget(target, componentInstance) {
+      // set a unique uuid to every component so it is easier to identify the vue component instance
+      $(componentInstance.$el).attr('lc-uuid', componentInstance.uuid);
+      target.appendChild(componentInstance.$el);
+    },
+    destroyComponentByUUID(uuid) {
+      if (!ComponentsRegistry[uuid]) {
+        return;
+      }
+
+      ComponentsRegistry[uuid].$destroy();
+      delete ComponentsRegistry[uuid];
+    },
+    getWidgetUUID(element) {
+      // In order to identify an instance of a widget, it must contain the attribute
+      // "lc-uuid" with its name
+      return $(element).attr('lc-uuid');
+    },
   }
 }
 </script>

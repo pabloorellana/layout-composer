@@ -25,7 +25,12 @@ export default new Vuex.Store({
     grid: state => state.composer.grid,
     selectedWidget: state => state.selectedWidget,
     contentByCellId: state => (cellId) => getCell(state.composer.grid, cellId),
-    appByNamespace: state => (namespace) => state.composer.apps.find(app => app.namespace === namespace)
+    appByNamespace: state => (namespace) => state.composer.apps.find(app => app.namespace === namespace),
+    cellsByNamespace: state => (namespace) => {
+      return state.composer.grid
+        .reduce((arr, next) => arr.concat(next), [])
+        .filter(cell => cell.content && cell.content.namespace && cell.content.namespace === namespace);
+    }
   },
   mutations: {
     setGrid: (state, grid) => state.composer.grid = grid,
