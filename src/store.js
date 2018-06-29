@@ -52,6 +52,10 @@ export default new Vuex.Store({
       }
     },
     addApp: (state, app) => state.composer.apps.push(app),
+    patchApp: (state, appObj) => {
+      const selectedApp = state.composer.apps.find(app => app.namespace === appObj.namespace);
+      Object.assign(selectedApp, appObj);
+    },
     deleteApp(state, namespace) {
       const appIndex = state.composer.apps.findIndex(app => app.namespace === namespace);
       state.composer.apps.splice(appIndex, 1);

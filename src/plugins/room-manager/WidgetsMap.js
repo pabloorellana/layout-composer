@@ -10,12 +10,8 @@ export default {
   'room-manager-server': function() {
     return {
       type: 'room-manager-server',
-      id: '',
-      serviceName: '',
-      credentials: {
-        user: '',
-        password: ''
-      },
+      connectionName: '',
+      serverUrl: '',
       namespace: 'room-manager'
     }
   }

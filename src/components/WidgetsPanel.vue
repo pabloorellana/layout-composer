@@ -95,13 +95,13 @@ export default {
       this.addApp(widgetModel);
       this.setSelectedWidget(widgetModel);
 
-      const { content: widgetProps } = this.appByNamespace(widgetModel.namespace)
+      const { content: widgetProps } = this.appByNamespace(widgetModel.namespace);
 
       // registering newly created module
       this.$store.registerModule(widgetModel.namespace, RmStore);
 
       const componentInstance = this.instantiateComponent({ type: widgetName, props: widgetProps });
-      this.renderWidget($(`#apps-container`)[0], componentInstance)
+      this.renderWidget($(`#apps-container`)[0], componentInstance);
     },
     addNewWidGet(widgetName, targetId) {
       const widgetModel = WidgetsMap[widgetName]();

@@ -8,6 +8,8 @@
   </table>
 </template>
 <script>
+import ComponentsRegistry from '@/components-registry';
+
 const propDefinition = {
   default: 1,
   validator (value) {
@@ -55,6 +57,28 @@ export default {
       }
 
       return element;
+    },
+    /**
+      When a row is deleted from the DOM, we should remove the vue components
+      that existed in that row because they are just removed from the view but
+      their instances are still alive, as they are registered in the ComponentRegistry
+      they should be identified and removed from there to ensure they are not leaking
+      memory and to fire correctly their "destroyed" hooks.
+     */
+    destroyRowElements(rowNumber) {
+      const tableRow = $(`table tr:nth-child(${rowNumber})`).children();
+
+      Array.from(tableRow).forEach(column => {
+        Array.from($(column).children()).forEach(child => {
+          if (!!child) {
+            const uuid = $(child).attr('lc-uuid');
+            if (uuid !== undefined) {
+              ComponentsRegistry[uuid].$destroy();
+              delete ComponentsRegistry[uuid];
+            }
+          }
+        });
+      });
     }
   },
   watch: {
@@ -71,6 +95,7 @@ export default {
         });
       }
 
+      this.destroyRowElements(oldVal);
       this.$emit('row-deleted');
     },
     columns(newVal, oldVal) {
